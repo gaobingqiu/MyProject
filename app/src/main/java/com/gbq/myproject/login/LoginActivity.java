@@ -57,7 +57,7 @@ public class LoginActivity extends BaseVMActivity<LoginViewModel> {
         });
         mViewModel.getRequestContacts().observe(this, this::requestContacts);
         mViewModel.getPopulateAutoComplete().observe(this, aBoolean -> initLoader());
-        mViewModel.getEmaiAdapter().observe(this, stringArrayAdapter -> mEmailView.setAdapter(stringArrayAdapter));
+        mViewModel.getEmailAdapter().observe(this, stringArrayAdapter -> mEmailView.setAdapter(stringArrayAdapter));
 
         mEmailSignInButton.setOnClickListener(view -> mViewModel.attemptLogin());
         mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> mViewModel.onEditorAction(id));

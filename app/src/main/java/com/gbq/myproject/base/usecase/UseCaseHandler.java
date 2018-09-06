@@ -25,14 +25,14 @@ public class UseCaseHandler {
     //only call on UI thread
     public <T extends UseCase.RequestValues, R extends UseCase.ResponseValue> void execute(final UseCase<T, R> task, T value, UseCase.UseCaseCallback<R> useCaseCallback) {
         task.setRequestValues(value);
-        task.setUseCaseCallback(new UiCallbackWrapper(useCaseCallback, this));
+        task.setUseCaseCallback(new UiCallbackWrapper<>(useCaseCallback, this));
         mUseCaseScheduler.execute(task::run);
     }
 
     //can call at any thread,result is on a async thread
     public <T extends UseCase.RequestValues, R extends UseCase.ResponseValue> void executeDirectly(final UseCase<T, R> task, T value, UseCase.UseCaseCallback<R> useCaseCallback) {
         task.setRequestValues(value);
-        task.setUseCaseCallback(new DirectlyCallbackWrapper(useCaseCallback, this));
+        task.setUseCaseCallback(new DirectlyCallbackWrapper<>(useCaseCallback, this));
         mUseCaseScheduler.execute(task::run);
     }
 

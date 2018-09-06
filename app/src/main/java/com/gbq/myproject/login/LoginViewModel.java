@@ -18,14 +18,21 @@ import android.widget.ArrayAdapter;
 
 import com.gbq.myproject.R;
 import com.gbq.myproject.base.BaseVm;
+import com.gbq.myproject.base.dagger.MyMutableLiveData;
 import com.gbq.myproject.base.usecase.UseCase;
 import com.gbq.myproject.base.usecase.UseCaseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
+/**
+ * 被标注的属性不能使用private修饰，否则无法注入
+ */
+@SuppressWarnings("WeakerAccess")
 public class LoginViewModel extends BaseVm implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
@@ -33,18 +40,26 @@ public class LoginViewModel extends BaseVm implements LoaderManager.LoaderCallba
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    private MutableLiveData<Boolean> mLoginPre;
-
-    private MutableLiveData<String> mPasswordError;
-    private MutableLiveData<String> mEmailError;
-    private MutableLiveData<Boolean> mShowProcess;
-    private MutableLiveData<Boolean> mOnLoginSuccess;
-    private MutableLiveData<Integer> mRequestContacts;
-    private MutableLiveData<Boolean> mPopulateAutoComplete;
-    private MutableLiveData<ArrayAdapter<String>> mEmaiAdapter;
+    @Inject
+    MyMutableLiveData<Boolean> mLoginPre;
+    @Inject
+    MyMutableLiveData<String> mPasswordError;
+    @Inject
+    MyMutableLiveData<String> mEmailError;
+    @Inject
+    MyMutableLiveData<Boolean> mShowProcess;
+    @Inject
+    MyMutableLiveData<Boolean> mOnLoginSuccess;
+    @Inject
+    MyMutableLiveData<Integer> mRequestContacts;
+    @Inject
+    MyMutableLiveData<Boolean> mPopulateAutoComplete;
+    @Inject
+    MyMutableLiveData<ArrayAdapter<String>> mEmailAdapter;
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
+        DaggerLoginComponent.create().inject(this);
     }
 
     public boolean mayRequestContacts() {
@@ -142,7 +157,7 @@ public class LoginViewModel extends BaseVm implements LoaderManager.LoaderCallba
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplication(),
                         android.R.layout.simple_dropdown_item_1line, emails);
-        getEmaiAdapter().setValue(adapter);
+        getEmailAdapter().setValue(adapter);
     }
 
     @Override
@@ -151,59 +166,35 @@ public class LoginViewModel extends BaseVm implements LoaderManager.LoaderCallba
     }
 
     public MutableLiveData<Boolean> getLoginPre() {
-        if (mLoginPre == null) {
-            mLoginPre = new MutableLiveData<>();
-        }
         return mLoginPre;
     }
 
     public MutableLiveData<String> getPasswordError() {
-        if (mPasswordError == null) {
-            mPasswordError = new MutableLiveData<>();
-        }
         return mPasswordError;
     }
 
     public MutableLiveData<String> getEmailError() {
-        if (mEmailError == null) {
-            mEmailError = new MutableLiveData<>();
-        }
         return mEmailError;
     }
 
     public MutableLiveData<Boolean> getShowProcess() {
-        if (mShowProcess == null) {
-            mShowProcess = new MutableLiveData<>();
-        }
         return mShowProcess;
     }
 
     public MutableLiveData<Boolean> getOnLoginSuccess() {
-        if (mOnLoginSuccess == null) {
-            mOnLoginSuccess = new MutableLiveData<>();
-        }
         return mOnLoginSuccess;
     }
 
     public MutableLiveData<Integer> getRequestContacts() {
-        if (mRequestContacts == null) {
-            mRequestContacts = new MutableLiveData<>();
-        }
         return mRequestContacts;
     }
 
     public MutableLiveData<Boolean> getPopulateAutoComplete() {
-        if (mPopulateAutoComplete == null) {
-            mPopulateAutoComplete = new MutableLiveData<>();
-        }
         return mPopulateAutoComplete;
     }
 
-    public MutableLiveData<ArrayAdapter<String>> getEmaiAdapter() {
-        if (mEmaiAdapter == null) {
-            mEmaiAdapter = new MutableLiveData<>();
-        }
-        return mEmaiAdapter;
+    public MutableLiveData<ArrayAdapter<String>> getEmailAdapter() {
+        return mEmailAdapter;
     }
 }
 
